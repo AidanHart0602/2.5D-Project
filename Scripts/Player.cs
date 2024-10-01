@@ -5,17 +5,16 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private bool _doubleJump;
-    [SerializeField]
-    private float _speed = 5;
-    [SerializeField]
-    private float _gravity = 1;
+    [SerializeField] private float _speed = 5;
+    [SerializeField] private float _gravity = 1;
     private float _velocityY;
-    [SerializeField]
-    private float _jump = 20;
+    [SerializeField] private float _jump = 20;
     private CharacterController _controller;
+
     // Start is called before the first frame update
     void Start()
     {
+
         _controller = GetComponent<CharacterController>();
     }
 
@@ -56,4 +55,5 @@ public class Player : MonoBehaviour
         Velocity.y = _velocityY;
         _controller.Move(Velocity * Time.deltaTime);
     }
+
 }

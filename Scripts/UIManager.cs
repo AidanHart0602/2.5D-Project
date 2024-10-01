@@ -5,18 +5,29 @@ using UnityEngine.UI;
 using TMPro;
 public class UIManager : MonoBehaviour
 {
-    private int _scoreVal;
-    [SerializeField] private TMP_Text _score;
+    private bool _elevatorStatus;
+    public int _scoreVal;
+    [SerializeField] private TMP_Text _scoreText, _livesText, _elevatorText;
     void Start()
     {
-        _score.text = "Score: 0";
+        _scoreText.text = "Score: 0";
+        _livesText.text = "Lives: 3";
     }
 
     public void ScoreUpdate() 
     {
         _scoreVal++;
-        _score.text = "Score:" + _scoreVal; 
+        _scoreText.text = "Score:" + _scoreVal; 
     }
 
+    public void LivesUpdate(int Lives)
+    {
+        _livesText.text = "Lives: " + Lives;
+    }
+
+    public void ElevatorTextStatus(bool Status) 
+    {
+        _elevatorText.gameObject.SetActive(Status);
+    }
 
 }
