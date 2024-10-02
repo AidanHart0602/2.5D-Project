@@ -7,6 +7,7 @@ public class Deadzone : MonoBehaviour
     private int _lives = 3;
     private UIManager _uiManager;
     [SerializeField] private GameObject _respawnPoint;
+    
     private void Start()
     {
         _uiManager = UIManager.FindFirstObjectByType<UIManager>();
@@ -29,7 +30,6 @@ public class Deadzone : MonoBehaviour
             }
         }
     }
-
     IEnumerator RespawnCC(CharacterController Control)
     {
         Control.enabled = false;

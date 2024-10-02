@@ -11,6 +11,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float _jump = 20;
     private CharacterController _controller;
 
+    private Vector3 _direction, _velocity;
+    private bool _wallJump;
+    private Vector3 _wallJumpNormal;
+    private float _pushPower = 2.5f;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,11 +31,12 @@ public class Player : MonoBehaviour
     void Movement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
-        Vector3 Direction = new Vector3(horizontalInput, 0, 0);
-        Vector3 Velocity = Direction * _speed;
-
+ 
         if (_controller.isGrounded == true)
         {
+            _wallJump = false;
+            _direction = new Vector3(horizontalInput, 0, 0);
+            _velocity = _direction * _speed;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _velocityY = _jump;
@@ -41,19 +46,41 @@ public class Player : MonoBehaviour
 
         else
         {
-            if(_doubleJump == true)
+            if (Input.GetKeyDown(KeyCode.Space) && _wallJump == false)
             {
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (_doubleJump == true)
                 {
                     _velocityY = _jump;
                     _doubleJump = false;
                 }
             }
+            else if (Input.GetKeyDown(KeyCode.Space) && _wallJump == true)
+            {
+                _velocity = _wallJumpNormal * _speed;
+                _velocityY = _jump;
+                _wallJump = false;
+            }
+
             _velocityY -= _gravity;
         }
-
-        Velocity.y = _velocityY;
-        _controller.Move(Velocity * Time.deltaTime);
+        _velocity.y = _velocityY;
+        _controller.Move(_velocity * Time.deltaTime);
     }
 
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.transform.tag == "Wall" && _controller.isGrounded == false)
+        {
+            Debug.DrawRay(hit.point, hit.normal, Color.blue);
+            _wallJumpNormal = hit.normal;
+            _wallJump = true;
+        }
+
+        if(hit.transform.tag == "Box")
+        {
+            Rigidbody RB = hit.collider.GetComponent<Rigidbody>();
+            Vector3 PushDirection = new Vector3(hit.moveDirection.x, 0, 0);
+            RB.velocity = PushDirection * _pushPower;
+        }
+    }
 }
